@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Result<Void>> handleBusiness(BusinessException e) {
-        // 业务异常也带上真实 HTTP 状态码：原来一律返回 200，curl / Postman / 监控都看不出请求失败
+        // 业务异常也带上对应的 HTTP 状态码，curl / 监控能直接看出请求失败
         HttpStatus status = HttpStatus.resolve(e.getCode());
         return ResponseEntity.status(status != null ? status : HttpStatus.BAD_REQUEST)
                 .body(Result.fail(e.getCode(), e.getMessage()));

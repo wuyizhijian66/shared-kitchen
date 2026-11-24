@@ -1354,8 +1354,7 @@ function rejectBooking(bookingId) {
     }
 }
 
-// 申请通过后在本地新建厨房时用的占位图：按类型挑仓库自带图片，
-// 不再依赖第三方图床（原来是 trae-api-cn.mchost.guru 的 text_to_image 接口）
+// 申请通过后新厨房用的占位图，按类型从仓库自带图片里挑
 const KITCHEN_IMAGES_BY_TYPE = {
     '中式厨房': 'images/kitchen_1_sunny.jpg',
     '烘焙厨房': 'images/kitchen_2_bakery.jpg',
