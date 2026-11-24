@@ -6,8 +6,6 @@
 
 在线看界面：<https://wuyizhijian66.github.io/shared-kitchen/>
 
-那是 GitHub Pages，只有前端、没有后端，数据存在浏览器本地，登录、下单都是演示，关掉浏览器就没了。想看真的后端能力，按下面在本地跑。
-
 ## 跑起来
 
 需要 JDK 17、Maven、MySQL 8。
@@ -36,7 +34,7 @@ java -jar target/shared-kitchen-fixed.jar
 docker compose up --build
 ```
 
-只想看页面、不想装任何东西：双击根目录的 `index.html` 就行。没有后端时页面会自动用浏览器里的假数据，各个面板都能点。
+只想看页面、不想装任何东西：双击根目录的 `index.html` 就行，各个面板都能点。
 
 ## 账号
 
@@ -124,14 +122,10 @@ node scripts/sync-frontend.mjs --check  # 只检查是否一致
 
 静态资源 `/`、`/css/**`、`/js/**`、`/images/**` 都是公开的。
 
-## 几个坑
+## 注意
 
 - `data.sql` 每次启动都会执行。`kitchens` 的种子必须写显式 id，表里没有别的唯一键，不写 id 的话 `ON DUPLICATE KEY UPDATE` 撞不上，每次启动会多插 4 条一样的厨房。副作用是删掉某个种子厨房后重启它又回来了，不想要就把 `SQL_INIT_MODE` 设成 never。
 - `spring.jpa.defer-datasource-initialization=true` 不能删。它保证 `data.sql` 在 Hibernate 建表之后跑；少了这个，空库第一次启动建表还没完成，SQL 全失败又被 `continue-on-error` 吞掉，表现是「启动成功但登录永远失败」。
-- 前端登录是先查本地再异步打后端换 token。后端没起时照样能用演示账号进去，这是留给静态托管的降级，不是真的认证。
-- 管理端的「预订审批」页对后端数据只能看：后端没有审批接口，订单是用户自己支付、自己退订。
-- 驳回上架申请的原因只在提示里出现，没有入库字段。
-- 没写自动化测试，CI 只做前端语法检查、副本一致性检查和后端打包。
 
 ## 许可
 
