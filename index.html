@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共享厨房管理系统</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 登录页面 -->
+        <div id="login-page" class="page active">
+            <h1>共享厨房管理系统</h1>
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="provider">厨房提供者</button>
+                <button class="tab-btn" data-tab="user">厨房使用者</button>
+                <button class="tab-btn" data-tab="admin">管理员</button>
+            </div>
+            
+            <!-- 厨房提供者登录 -->
+            <div class="login-form" id="provider-login">
+                <h2>厨房提供者登录</h2>
+                <input type="text" placeholder="用户名" id="provider-username">
+                <input type="password" placeholder="密码" id="provider-password">
+                <button id="provider-login-btn">登录</button>
+                <p>还没有账号？<a href="#" id="provider-register-link">立即注册</a></p>
+                <p>测试账号：test / 123456</p>
+            </div>
+            
+            <!-- 厨房使用者登录 -->
+            <div class="login-form" id="user-login" style="display: none;">
+                <h2>厨房使用者登录</h2>
+                <input type="text" placeholder="用户名" id="user-username">
+                <input type="password" placeholder="密码" id="user-password">
+                <button id="user-login-btn">登录</button>
+                <p>还没有账号？<a href="#" id="user-register-link">立即注册</a></p>
+                <p>测试账号：test / 123456</p>
+            </div>
+            
+            <!-- 管理员登录 -->
+            <div class="login-form" id="admin-login" style="display: none;">
+                <h2>管理员登录</h2>
+                <input type="text" placeholder="用户名" id="admin-username">
+                <input type="password" placeholder="密码" id="admin-password">
+                <button id="admin-login-btn">登录</button>
+                <p>测试账号：admin / admin123</p>
+            </div>
+        </div>
+        
+        <!-- 厨房提供者注册页面 -->
+        <div id="provider-register-page" class="page" style="display: none;">
+            <h1>厨房提供者注册</h1>
+            <input type="text" placeholder="用户名" id="provider-reg-username">
+            <input type="text" placeholder="姓名" id="provider-reg-name">
+            <input type="text" placeholder="联系电话" id="provider-reg-phone">
+            <input type="text" placeholder="地址" id="provider-reg-address">
+            <input type="password" placeholder="密码" id="provider-reg-password">
+            <button id="provider-register-btn">注册</button>
+            <p>已有账号？<a href="#" id="provider-back-to-login">返回登录</a></p>
+        </div>
+        
+        <!-- 厨房使用者注册页面 -->
+        <div id="user-register-page" class="page" style="display: none;">
+            <h1>厨房使用者注册</h1>
+            <input type="text" placeholder="用户名" id="user-reg-username">
+            <input type="text" placeholder="姓名" id="user-reg-name">
+            <input type="text" placeholder="联系电话" id="user-reg-phone">
+            <input type="text" placeholder="地址" id="user-reg-address">
+            <input type="password" placeholder="密码" id="user-reg-password">
+            <button id="user-register-btn">注册</button>
+            <p>已有账号？<a href="#" id="user-back-to-login">返回登录</a></p>
+        </div>
+        
+        <!-- 厨房使用者页面 -->
+        <div id="user-page" class="page" style="display: none;">
+            <header>
+                <h1>厨房使用者中心</h1>
+                <button id="user-logout">退出</button>
+            </header>
+            <div class="user-content">
+                <div class="search-section">
+                    <input type="text" id="kitchen-search-input" placeholder="搜索厨房名称或类型..." onkeyup="filterKitchens()">
+                    <button id="kitchen-search-btn" onclick="filterKitchens()">搜索</button>
+                    <select id="kitchen-sort" onchange="filterKitchens()">
+                        <option value="default">默认排序</option>
+                        <option value="price-asc">价格从低到高</option>
+                        <option value="price-desc">价格从高到低</option>
+                        <option value="rating">按评分排序</option>
+                    </select>
+                </div>
+                <div class="kitchen-categories">
+                    <h2>厨房类型</h2>
+                    <div class="category-buttons">
+                        <button class="category-btn active">全部</button>
+                        <button class="category-btn">中式厨房</button>
+                        <button class="category-btn">西式厨房</button>
+                        <button class="category-btn">烘焙厨房</button>
+                        <button class="category-btn">饮品厨房</button>
+                    </div>
+                    <div class="sort-buttons">
+                        <button id="sort-price-asc" class="sort-btn">价格从低到高</button>
+                        <button id="sort-price-desc" class="sort-btn">价格从高到低</button>
+                        <button id="sort-rating" class="sort-btn">按评分排序</button>
+                    </div>
+                </div>
+                <div class="favorites-section">
+                    <h2>我的收藏</h2>
+                    <div class="favorites-list">
+                        <!-- 收藏列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="kitchen-list">
+                    <h2>推荐厨房</h2>
+                    <div class="kitchen-items">
+                        <!-- 厨房项将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="notifications-section">
+                    <h2>通知消息</h2>
+                    <div class="notifications-list">
+                        <!-- 通知列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="booking-section">
+                    <h2>我的预订</h2>
+                    <div class="booking-list">
+                        <!-- 预订列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="chat-section">
+                    <h2>聊天</h2>
+                    <div class="chat-list">
+                        <button class="chat-btn" data-type="provider">与厨房提供者聊天</button>
+                        <button class="chat-btn" data-type="admin">与管理员聊天</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 厨房提供者页面 -->
+        <div id="provider-page" class="page" style="display: none;">
+            <header>
+                <h1>厨房提供者中心</h1>
+                <button id="provider-logout">退出</button>
+            </header>
+            <div class="provider-content">
+                <div class="messages-section">
+                    <h2>系统消息</h2>
+                    <div class="messages-list">
+                        <!-- 消息列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="kitchen-management">
+                    <div class="section-header">
+                        <h2>厨房管理</h2>
+                        <button id="add-kitchen-btn" onclick="openAddKitchenModal()">申请添加</button>
+                        <button id="restore-kitchen-btn" onclick="goToRestorePage()">申请恢复</button>
+                    </div>
+                    <div class="kitchen-list">
+                        <!-- 厨房列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="booking-management">
+                    <div class="section-header">
+                        <h2>预订管理</h2>
+                        <select id="booking-status-filter" onchange="filterBookings()">
+                            <option value="all">全部状态</option>
+                            <option value="待确认">待确认</option>
+                            <option value="已确认">已确认</option>
+                            <option value="待使用">待使用</option>
+                            <option value="已完成">已完成</option>
+                            <option value="已取消">已取消</option>
+                            <option value="已拒绝">已拒绝</option>
+                        </select>
+                    </div>
+                    <div class="booking-list">
+                        <!-- 预订列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="application-management">
+                    <h2>我的申请</h2>
+                    <div class="application-list">
+                        <!-- 申请列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="chat-section">
+                    <h2>聊天</h2>
+                    <div class="chat-list">
+                        <button class="chat-btn" data-type="admin">与管理员聊天</button>
+                        <button class="chat-btn" data-type="user">与厨房使用者聊天</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 管理员页面 -->
+        <div id="admin-page" class="page" style="display: none;">
+            <header>
+                <h1>管理员中心</h1>
+                <button id="admin-logout">退出</button>
+            </header>
+            <div class="admin-content">
+                <div class="dashboard">
+                    <h2>数据统计</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="stat-users">0</div>
+                                <div class="stat-label">用户总数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏠</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="stat-kitchens">0</div>
+                                <div class="stat-label">厨房总数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="stat-bookings">0</div>
+                                <div class="stat-label">预订总数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="stat-pending">0</div>
+                                <div class="stat-label">待确认</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-management">
+                    <h2>用户管理</h2>
+                    <div class="user-list">
+                        <!-- 用户列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="booking-applications">
+                    <h2>预订申请</h2>
+                    <div class="booking-applications-list">
+                        <!-- 预订申请列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="kitchen-applications">
+                    <h2>厨房提供申请</h2>
+                    <div class="kitchen-applications-list">
+                        <!-- 厨房申请列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="kitchen-management">
+                    <h2>厨房管理</h2>
+                    <div class="kitchen-list">
+                        <!-- 厨房列表将通过JS动态添加 -->
+                    </div>
+                </div>
+                <div class="chat-section">
+                    <h2>聊天</h2>
+                    <div class="chat-list">
+                        <button class="chat-btn" data-type="user">与厨房使用者聊天</button>
+                        <button class="chat-btn" data-type="provider">与厨房提供者聊天</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 恢复厨房页面 -->
+        <div id="restore-page" class="page" style="display: none;">
+            <header>
+                <h1>申请恢复厨房</h1>
+                <button id="restore-back">返回</button>
+            </header>
+            <div class="restore-content">
+                <div class="restore-section">
+                    <h2>已删除的厨房</h2>
+                    <div id="deleted-kitchens-list">
+                        <!-- 已删除厨房列表 -->
+                    </div>
+                </div>
+                <div class="restore-form-section">
+                    <h2>提交恢复申请</h2>
+                    <div class="restore-form">
+                        <div class="form-group">
+                            <label>选择要恢复的厨房：</label>
+                            <select id="restore-kitchen-select">
+                                <option value="">请选择已删除的厨房</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>恢复原因：</label>
+                            <textarea id="restore-reason" placeholder="请说明申请恢复的原因"></textarea>
+                        </div>
+                        <button id="submit-restore-btn">提交申请</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 聊天页面 -->
+        <div id="chat-page" class="page" style="display: none;">
+            <header>
+                <h1>聊天</h1>
+                <button id="chat-back">返回</button>
+            </header>
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <h3>聊天列表</h3>
+                    <div id="chat-contacts">
+                        <!-- 联系人列表 -->
+                    </div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-header" id="chat-header">
+                        <h2 id="current-contact-name">选择一个联系人开始聊天</h2>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- 聊天消息将通过JS动态添加 -->
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" placeholder="输入消息..." id="chat-message-input">
+                        <button id="send-message-btn">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 厨房详情页面 -->
+        <div id="kitchen-detail-page" class="page" style="display: none;">
+            <header>
+                <h1>厨房详情</h1>
+                <button id="kitchen-detail-back">返回</button>
+            </header>
+            <div class="kitchen-detail-content">
+                <div class="kitchen-detail-header">
+                    <img id="detail-image" src="" alt="厨房图片">
+                    <div class="kitchen-detail-info">
+                        <h2 id="detail-name"></h2>
+                        <div class="detail-type" id="detail-type"></div>
+                        <div class="detail-price" id="detail-price"></div>
+                        <div class="detail-rating" id="detail-rating"></div>
+                    </div>
+                </div>
+                <div class="kitchen-detail-facilities">
+                    <h3>设施配备</h3>
+                    <p id="detail-facilities"></p>
+                </div>
+                <div class="kitchen-detail-actions">
+                    <button id="kitchen-action-btn">立即预订</button>
+                    <button id="kitchen-delete-btn" style="display: none;">删除厨房</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 预订弹窗 -->
+        <div id="booking-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>预订厨房</h2>
+                    <button class="close-btn" id="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>选择日期：</label>
+                        <input type="date" id="booking-date">
+                    </div>
+                    <div class="form-group">
+                        <label>选择时间段：</label>
+                        <select id="booking-time">
+                            <option value="08:00-12:00">08:00-12:00</option>
+                            <option value="12:00-16:00">12:00-16:00</option>
+                            <option value="16:00-20:00">16:00-20:00</option>
+                            <option value="20:00-24:00">20:00-24:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>预订人姓名：</label>
+                        <input type="text" id="booking-name" placeholder="请输入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话：</label>
+                        <input type="tel" id="booking-phone" placeholder="请输入电话">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-booking-btn">确认预订</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 支付弹窗 -->
+        <div id="payment-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>支付</h2>
+                    <button class="close-btn" id="close-payment-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="payment-info">
+                        <h3>支付详情</h3>
+                        <div id="payment-details">
+                            <!-- 支付详情将通过JS动态添加 -->
+                        </div>
+                    </div>
+                    <div class="payment-methods">
+                        <h4>选择支付方式</h4>
+                        <div class="payment-option">
+                            <input type="radio" id="payment-wechat" name="payment-method" value="wechat" checked>
+                            <label for="payment-wechat">微信支付</label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="payment-alipay" name="payment-method" value="alipay">
+                            <label for="payment-alipay">支付宝</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-payment-btn">确认支付</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自定义确认弹窗 -->
+        <div id="confirm-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>确认操作</h2>
+                    <button class="close-btn" id="close-confirm-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="confirm-message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-cancel-btn">取消</button>
+                    <button id="confirm-ok-btn">确认</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自定义提示弹窗 -->
+        <div id="alert-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>提示</h2>
+                    <button class="close-btn" id="close-alert-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="alert-message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="alert-ok-btn">确定</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 添加厨房弹窗 -->
+        <div id="add-kitchen-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>添加厨房</h2>
+                    <button class="close-btn" id="close-add-kitchen-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>厨房名称：</label>
+                        <input type="text" id="add-kitchen-name" placeholder="请输入厨房名称">
+                    </div>
+                    <div class="form-group">
+                        <label>厨房类型：</label>
+                        <select id="add-kitchen-type">
+                            <option value="中式厨房">中式厨房</option>
+                            <option value="西式厨房">西式厨房</option>
+                            <option value="烘焙厨房">烘焙厨房</option>
+                            <option value="饮品厨房">饮品厨房</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>每小时价格（元）：</label>
+                        <input type="number" id="add-kitchen-price" placeholder="请输入价格">
+                    </div>
+                    <div class="form-group">
+                        <label>厨房设施：</label>
+                        <input type="text" id="add-kitchen-facilities" placeholder="例如：天然气灶、抽油烟机、冰箱">
+                    </div>
+                    <div class="form-group">
+                        <label>地址：</label>
+                        <input type="text" id="add-kitchen-address" placeholder="请输入地址">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-add-kitchen-btn">申请添加</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 恢复厨房弹窗 -->
+        <div id="restore-kitchen-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>申请恢复厨房</h2>
+                    <button class="close-btn" id="close-restore-kitchen-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>选择要恢复的厨房：</label>
+                        <select id="restore-kitchen-select">
+                            <option value="">请选择已删除的厨房</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>恢复原因：</label>
+                        <textarea id="restore-reason" placeholder="请说明申请恢复的原因"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-restore-kitchen-btn">提交申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模块化脚本：按依赖顺序加载 -->
+    <script src="js/api-client.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/kitchen.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

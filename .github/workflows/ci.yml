@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  frontend:
+    name: 前端静态检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 检查 9 个前端模块语法
+        run: |
+          set -e
+          for f in js/*.js; do
+            node --check "$f"
+          done
+          echo "前端模块语法检查通过"
+      - name: 检查根目录前端与 static 目录是否一致
+        run: node scripts/sync-frontend.mjs --check
+
+  backend:
+    name: 后端构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: mvn package
+        working-directory: backend
+        run: mvn -B -DskipTests package
+      - name: 上传 jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-kitchen-jar
+          path: backend/target/shared-kitchen-fixed.jar

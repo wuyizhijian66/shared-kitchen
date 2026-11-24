@@ -1,0 +1,39 @@
+# === Java / Maven ===
+backend/target/
+*.class
+
+# === IDE ===
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Logs / 临时文件 ===
+*.log
+logs/
+tmp/
+*.tmp
+_test_*
+_check_*
+_verify_*
+_api_*.json
+_img_*.jpg
+_v*.js
+_tmp.js
+*.bin
+
+# === 本项目调试产物 ===
+_browser_debug/
+_final_check/
+_jar_check/
+.screenshots/
+.trae-html-share-packages/
+
+# === 打包产物 ===
+*.zip
