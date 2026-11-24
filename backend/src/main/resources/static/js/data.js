@@ -1099,7 +1099,7 @@ async function deleteKitchen(kitchenId, reason) {
         loadKitchenItems();
         
         // 显示成功提示
-        showSuccessToast(`厨房 "${kitchen.name}" 已成功删除！\n删除原因：${reason}\n已通知厨房提供者。`);
+showSuccessToast(`厨房 "${kitchen.name}" 已删除\n原因：${reason}\n已通知提供者。`);
     }
 }
 
@@ -1111,7 +1111,7 @@ function sendMessageToProvider(kitchen, reason) {
         from: '管理员',
         to: '厨房提供者',
         subject: `您的厨房 "${kitchen.name}" 已被删除`,
-        content: `尊敬的提供者：\n\n您的厨房 "${kitchen.name}" 已被管理员删除。\n\n删除原因：${reason}\n\n如有疑问，请联系管理员。`,
+content: `你的厨房 "${kitchen.name}" 被管理员删除了。\n原因：${reason}\n有疑问直接在这里回我。`
         time: new Date().toLocaleString(),
         read: false
     };

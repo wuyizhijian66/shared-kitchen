@@ -83,11 +83,11 @@
             let existingMessages = getChatMessages();
 
             const mockMessages = [
-                { id: 1, from: 'admin', to: 'provider', content: '您好，您申请的厨房已通过审核', time: new Date(Date.now() - 3600000).toISOString() },
-                { id: 2, from: 'provider', to: 'admin', content: '感谢管理员！', time: new Date(Date.now() - 3500000).toISOString() },
-                { id: 3, from: 'test', to: 'provider', content: '您好，请问厨房周末有空吗？', time: new Date(Date.now() - 7200000).toISOString() },
-                { id: 4, from: 'provider', to: 'test', content: '您好，周末有空的，欢迎预订！', time: new Date(Date.now() - 7100000).toISOString() },
-                { id: 5, from: 'admin', to: 'test', content: '您好，欢迎使用共享厨房平台！', time: new Date(Date.now() - 1800000).toISOString() }
+                { id: 1, from: 'admin', to: 'provider', content: '厨房审核过了，可以开始接单', time: new Date(Date.now() - 3600000).toISOString() },
+                { id: 2, from: 'provider', to: 'admin', content: '好，谢谢', time: new Date(Date.now() - 3500000).toISOString() },
+                { id: 3, from: 'test', to: 'provider', content: '周末还有空位吗', time: new Date(Date.now() - 7200000).toISOString() },
+                { id: 4, from: 'provider', to: 'test', content: '有，周六下午和周日全天都空着', time: new Date(Date.now() - 7100000).toISOString() },
+                { id: 5, from: 'admin', to: 'test', content: '你的预订我看到了，付款之后就算确认', time: new Date(Date.now() - 1800000).toISOString() }
             ];
 
             if (existingMessages.length === 0) {
