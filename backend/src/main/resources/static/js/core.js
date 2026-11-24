@@ -93,6 +93,48 @@ function saveMockBookings(bookings) {
     localStorage.setItem('mockBookings', JSON.stringify(bookings));
 }
 
+// ==================== 演示数据种子 ====================
+// 纯静态托管（GitHub Pages）或直接双击 index.html 时没有后端，各面板默认是空的。
+// 这里在首次访问时灌一份演示数据（日期按当天动态计算，避免一上线就全是"已过期"）。
+// 连了后端时这些数据不会被读取（各页面优先走后端），所以不影响正常使用。
+function ensureDemoSeed() {
+    if (localStorage.getItem('demoSeedV1')) return;
+
+    const pad = n => String(n).padStart(2, '0');
+    const dayOffset = n => {
+        const d = new Date();
+        d.setDate(d.getDate() + n);
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    };
+
+    const seedBookings = [
+        { id: 1, user: 'test', kitchen: '阳光厨房', date: dayOffset(3), time: '09:00-12:00', status: '待支付' },
+        { id: 2, user: 'test', kitchen: '西式烘焙坊', date: dayOffset(5), time: '14:00-17:00', status: '待确认' },
+        { id: 3, user: 'test', kitchen: '日式烘焙厨房', date: dayOffset(-6), time: '10:00-13:00', status: '已完成' }
+    ];
+    localStorage.setItem('mockBookings', JSON.stringify(seedBookings));
+
+    const seedApplications = [
+        { id: 101, name: '街角轻食厨房', type: '西式厨房', price: 120, facilities: '烤箱、料理台、冰箱', applicant: 'provider1', applyTime: dayOffset(-2), status: '待审核' },
+        { id: 102, name: '手冲咖啡角', type: '饮品厨房', price: 90, facilities: '咖啡机、磨豆机、净水器', applicant: 'provider2', applyTime: dayOffset(-1), status: '待审核' }
+    ];
+    localStorage.setItem('kitchenApplications', JSON.stringify(seedApplications));
+
+    const seedDeleted = [
+        { id: 201, name: '旧仓库厨房', type: '中式厨房', price: 70, deletedAt: dayOffset(-8), deleteReason: '场地到期，暂停营业' }
+    ];
+    localStorage.setItem('deletedKitchens', JSON.stringify(seedDeleted));
+
+    if (getRegisteredUsers().length === 0) {
+        localStorage.setItem('registeredUsers', JSON.stringify([
+            { username: 'provider1', password: '123456', name: '厨房提供者1', type: 'provider', phone: '13800000001', registerTime: dayOffset(-30) },
+            { username: 'user1', password: '123456', name: '张同学', type: 'user', phone: '13800000002', registerTime: dayOffset(-12) }
+        ]));
+    }
+
+    localStorage.setItem('demoSeedV1', '1');
+}
+
 // 兼容旧代码
 const mockBookings = getMockBookings();
 
@@ -305,5 +347,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         }
     };
+});
+
+// ==================== 演示模式提示 ====================
+// 纯静态托管（GitHub Pages）或直接双击 index.html 时没有后端，各页面会自动使用浏览器本地演示数据。
+// 这里探测一次 /api/kitchens：不可用就在页面底部固定一条说明，避免访客误以为数据是真的。
+function showDemoModeBanner() {
+    if (document.getElementById('demo-mode-banner')) return;
+    const bar = document.createElement('div');
+    bar.id = 'demo-mode-banner';
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:8px 14px;'
+        + 'font:13px/1.5 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;text-align:center;'
+        + 'background:#1f2937;color:#f9fafb;box-shadow:0 -2px 8px rgba(0,0,0,.15)';
+    const link = document.createElement('a');
+    link.href = 'https://github.com/wuyizhijian66/shared-kitchen#快速开始';
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = '按 README 本地启动完整版';
+    link.style.color = '#93c5fd';
+    bar.appendChild(document.createTextNode('演示模式：未连接后端，数据只保存在当前浏览器 · '));
+    bar.appendChild(link);
+    document.body.appendChild(bar);
+    document.body.style.paddingBottom = '46px';
+}
+
+async function detectBackendAndAnnounce() {
+    try {
+        const res = await fetch(API_BASE + '/kitchens', { headers: { 'Accept': 'application/json' } });
+        if (res.ok) return false; // 后端在线，不打扰
+    } catch (e) { /* 网络失败，说明是纯静态环境 */ }
+    showDemoModeBanner();
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    ensureDemoSeed();
+    detectBackendAndAnnounce();
 });
 

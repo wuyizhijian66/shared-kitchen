@@ -5,7 +5,8 @@
 // ====== 配置 ======
 // 用相对路径，让前端静态页和后端 API 同端口同域，避开 CORS
 // 开发时可以把 Spring Boot 跑在 8080，前端静态页也由它托管
-const API_BASE = '/api';
+// 允许页面用 window.__API_BASE__ 指向远端后端（例如把前端托管在 GitHub Pages、后端跑在云上）
+const API_BASE = window.__API_BASE__ || '/api';
 
 // ====== 状态 ======
 let _token = localStorage.getItem('authToken') || null;
