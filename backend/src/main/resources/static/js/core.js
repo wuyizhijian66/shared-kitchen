@@ -50,9 +50,7 @@ function goToRestorePage() {
 
 // ==================== 数据存储 ====================
 
-// 模拟数据：后端没起来时首页仍然能演示。
-// 图片换成本仓库自带的 images/ 本地图：原来指向 trae-api-cn.mchost.guru 的第三方图床，
-// 那是上一个作者 IDE 的私有服务，随时可能失效（失效后首页整片白图）。
+// 后端没起来时首页也得有东西看，用这组数据兜底。图片是本仓库 images/ 里的。
 const mockKitchens = [
     { id: 1, name: '阳光厨房', type: '中式厨房', price: 100, rating: 4.5, image: 'images/kitchen_1_sunny.jpg', facilities: '天然气灶、抽油烟机、冰箱、工作台' },
     { id: 2, name: '西式烘焙坊', type: '烘焙厨房', price: 120, rating: 4.7, image: 'images/kitchen_2_bakery.jpg', facilities: '烤箱、发酵箱、工作台、冰箱' },
@@ -60,12 +58,10 @@ const mockKitchens = [
     { id: 4, name: '饮品工作室', type: '饮品厨房', price: 80, rating: 4.0, image: 'images/kitchen_4_beverage.jpg', facilities: '搅拌机、咖啡机、冷藏柜、工作台' }
 ];
 
-// const 在经典脚本顶层只进入全局词法环境，不会成为 window 的属性；
-// kitchen.js 用 typeof window.mockKitchens 判断时因此恒为 undefined，分类筛选永远拿到空列表。
+// 挂到 window 上：const 顶层声明不会自动变成 window 属性，kitchen.js 那边按 window.mockKitchens 取。
 window.mockKitchens = mockKitchens;
 
-// 首页当前实际使用的数据集（后端返回优先），搜索 / 排序 / 收藏都基于它，
-// 否则一搜索就会把真实数据打回内置假数据。
+// 首页当前显示的数据（后端返回的优先），搜索、排序、收藏都基于它。
 window.currentKitchens = [];
 
 function getCurrentKitchens() {
@@ -350,8 +346,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==================== 演示模式提示 ====================
-// 纯静态托管（GitHub Pages）或直接双击 index.html 时没有后端，各页面会自动使用浏览器本地演示数据。
-// 这里探测一次 /api/kitchens：不可用就在页面底部固定一条说明，避免访客误以为数据是真的。
+// 静态托管（比如 GitHub Pages）或直接双击 index.html 时没有后端，
+// 探一次 /api/kitchens，探不到就在页面底部挂条提示，免得以为数据是真的。
 function showDemoModeBanner() {
     if (document.getElementById('demo-mode-banner')) return;
     const bar = document.createElement('div');
@@ -363,9 +359,9 @@ function showDemoModeBanner() {
     link.href = 'https://github.com/wuyizhijian66/shared-kitchen#快速开始';
     link.target = '_blank';
     link.rel = 'noopener';
-    link.textContent = '按 README 本地启动完整版';
+    link.textContent = '怎么跑真后端';
     link.style.color = '#93c5fd';
-    bar.appendChild(document.createTextNode('演示模式：未连接后端，数据只保存在当前浏览器 · '));
+    bar.appendChild(document.createTextNode('演示数据，只存在这个浏览器里 · '));
     bar.appendChild(link);
     document.body.appendChild(bar);
     document.body.style.paddingBottom = '46px';
