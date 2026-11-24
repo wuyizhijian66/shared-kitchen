@@ -1111,7 +1111,7 @@ function sendMessageToProvider(kitchen, reason) {
         from: '管理员',
         to: '厨房提供者',
         subject: `您的厨房 "${kitchen.name}" 已被删除`,
-content: `你的厨房 "${kitchen.name}" 被管理员删除了。\n原因：${reason}\n有疑问直接在这里回我。`
+content: `你的厨房 "${kitchen.name}" 被管理员删除了。\n原因：${reason}\n有疑问直接在这里回我。`,
         time: new Date().toLocaleString(),
         read: false
     };
